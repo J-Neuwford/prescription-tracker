@@ -67,7 +67,7 @@ async def update_prescription(id: int, data: PrescriptionInput) -> Prescription:
             {"id": id, 
              "medication_name": data.medication_name, 
              "dosage": data.dosage,
-             "frequency": data.dosage,
+             "frequency": data.frequency,
              "is_repeating": data.is_repeating},
   )
   if result is None:
