@@ -1,58 +1,77 @@
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList, Button } from "react-native";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 import PrescriptionCard from "../components/PrescriptionCard";
 
+const BASE_URL = "https://prescription-tracker.onrender.com";
+
+const newPrescription = {
+  medication_name: "Paracetamol",
+  dosage: "1000mg",
+  frequency: "Every four hours",
+  is_repeating: false,
+};
+
 function PrescriptionsScreen() {
-  const mockPrescriptionData = [
-    {
-      dosage: "1000mg",
-      frequency: "Every four hours",
-      id: "0",
-      isRepeating: false,
-      medicationName: "Paracetamol",
-    },
-    {
-      dosage: "400mg",
-      frequency: "Every four hours",
-      id: "1",
-      isRepeating: false,
-      medicationName: "Ibuprofen",
-    },
-    {
-      dosage: "125mg",
-      frequency: "Twice a day",
-      id: "2",
-      isRepeating: true,
-      medicationName: "Lamotrigine",
-    },
-    {
-      dosage: "2mg",
-      frequency: "As needed",
-      id: "3",
-      isRepeating: true,
-      medicationName: "Diazepam",
-    },
-  ];
+  const [isLoading, setIsLoading] = useState(false);
+  const [prescriptions, setPrescriptions] = useState([]);
+
+  useEffect(() => {
+    fetchPrescriptions();
+  }, []);
+
+  const fetchPrescriptions = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/prescriptions`);
+      setPrescriptions(response.data);
+      console.log("response", response.data);
+    } catch (error) {
+      console.log("Error fetching prescriptions", error);
+    }
+  };
+
+  const storePrescription = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/prescriptions`,
+        newPrescription
+      );
+      console.log(response);
+      fetchPrescriptions();
+      setIsLoading(false);
+    } catch (error) {
+      console.log("error", error);
+      setIsLoading(false);
+    }
+  };
+
+  function handlePress() {
+    storePrescription();
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Active Prescriptions</Text>
       <FlatList
-        data={mockPrescriptionData}
+        data={prescriptions.prescriptions}
         renderItem={(itemData) => {
-          return (
+          return isLoading ? (
+            <PrescriptionCard />
+          ) : (
             <PrescriptionCard
-              medicationName={itemData.item.medicationName}
+              medicationName={itemData.item.medication_name}
               dosage={itemData.item.dosage}
               frequency={itemData.item.frequency}
-              isRepeating={itemData.item.isRepeating}
             />
           );
         }}
-        keyExtractor={(item, index) => {
-          return item.id;
-        }}
+        keyExtractor={(item, index) =>
+          item.id ? item.id.toString() : index.toString()
+        }
       />
+      <Button title="Add prescription" onPress={handlePress} />
     </View>
   );
 }
