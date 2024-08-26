@@ -3,9 +3,14 @@ from dataclasses import dataclass
 from quart import abort, g, Quart
 from quart_db import QuartDB
 from quart_schema import QuartSchema, validate_request, validate_response
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 app = Quart(__name__)
-QuartDB(app, url="sqlite:///prescription_tracker.db")
+QuartDB(app, url=DATABASE_URL)
 QuartSchema(app)
 
 @dataclass
