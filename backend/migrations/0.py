@@ -3,11 +3,11 @@ from quart_db import Connection
 async def migrate(connection: Connection) -> None:
   await connection.execute(
     """CREATE TABLE prescriptions (
-    id integer PRIMARY KEY,
-    medication_name text NOT NULL,
-    dosage text NOT NULL,
-    frequency text NOT NULL,
-    is_repeating integer DEFAULT 0
+    id SERIAL PRIMARY KEY,
+    medication_name STRING NOT NULL,
+    dosage STRING NOT NULL,
+    frequency STRING NOT NULL,
+    is_repeating BOOLEAN DEFAULT FALSE
     )"""
   )
 
