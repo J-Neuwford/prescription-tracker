@@ -1,20 +1,21 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar, StyleSheet } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+
+import PrescriptionsScreen from "./screens/PrescriptionsScreen.js";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <StatusBar style="light" />
+      <LinearGradient colors={["#212529", "#343a40"]} style={styles.rootScreen}>
+        <PrescriptionsScreen />
+      </LinearGradient>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  rootScreen: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
