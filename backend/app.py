@@ -18,7 +18,7 @@ class PrescriptionInput:
   medication_name: str
   dosage: str
   frequency: str
-  is_repeating: int
+  is_repeating: bool
 
 @dataclass
 class Prescription(PrescriptionInput):
