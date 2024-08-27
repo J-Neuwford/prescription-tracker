@@ -26,7 +26,7 @@ As a user, I can:
 - set up reminders to reorder repeat prescriptions.
 - keep track of how much of a prescription I have left.
 
-// Tech notes: I will need to revisit schemas for reminders and scheduling, and
+// Tech notes: I will need to revisit schemas for reminders and scheduling.
 
 ## TODO Frontend
 
