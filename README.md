@@ -12,7 +12,7 @@ I also experimented with using **SQLite** whilst developing the backend locally,
 As a user, I can:
 
 - navigate between a home screen and prescriptions screen. ✅
-- add prescriptions.
+- add prescriptions. ✅
 - view active prescriptions. ✅
 - edit and delete active prescriptions.
 
@@ -30,10 +30,10 @@ As a user, I can:
 
 ## TODO Frontend
 
-- extract api requests
+- extract api requests ✅
 - home screen ✅
 - navigation via state ✅
-- add prescription form
+- add prescription screen ✅
 - safe area view ✅
 - selected prescription, edit and delete icons
 - colours file

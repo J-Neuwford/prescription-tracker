@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, Button, StyleSheet, TextInput } from "react-native";
+import { View, Text, Button, StyleSheet, TextInput, Alert } from "react-native";
 import { storePrescription } from "../api/api";
 
 function AddPrescriptionScreen({ onNavigate }) {
@@ -33,11 +33,21 @@ function AddPrescriptionScreen({ onNavigate }) {
 
   const onConfirm = async () => {
     try {
-      await storePrescription(newPrescription);
+      if (
+        newPrescription.medication_name !== "" &&
+        newPrescription.dosage !== "" &&
+        newPrescription.frequency !== ""
+      ) {
+        await storePrescription(newPrescription);
+        onNavigate();
+      } else {
+        Alert.alert("Form incomplete", "Please fill in all fields", [
+          { text: "OK", style: "default" },
+        ]);
+      }
     } catch (error) {
       console.log("Error adding prescription", error);
     } finally {
-      onNavigate();
     }
   };
 
