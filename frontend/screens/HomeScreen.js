@@ -2,10 +2,14 @@ import { View, Text, Button, StyleSheet } from "react-native";
 
 function HomeScreen({ onPress }) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>HOME SCREEN</Text>
-      <Button title="Prescriptions" onPress={onPress} />
-    </View>
+    <>
+      <View style={styles.container}>
+        <Text style={styles.title}>HOME SCREEN</Text>
+      </View>
+      <View style={styles.prescriptionsButton}>
+        <Button color="teal" title="Prescriptions" onPress={onPress} />
+      </View>
+    </>
   );
 }
 
@@ -21,5 +25,8 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 32,
     marginBottom: 24,
+  },
+  prescriptionsButton: {
+    padding: 20,
   },
 });

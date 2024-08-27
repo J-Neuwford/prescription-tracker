@@ -1,10 +1,9 @@
 import { View, Text, StyleSheet, FlatList, Button } from "react-native";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { BASE_URL } from "@env";
 
 import PrescriptionCard from "../components/PrescriptionCard";
-
-const BASE_URL = "https://prescription-tracker.onrender.com";
 
 const newPrescription = {
   medication_name: "Paracetamol",
@@ -52,28 +51,34 @@ function PrescriptionsScreen({ onPress }) {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Active Prescriptions</Text>
-      <FlatList
-        data={prescriptions.prescriptions}
-        renderItem={(itemData) => {
-          return isLoading ? (
-            <PrescriptionCard />
-          ) : (
-            <PrescriptionCard
-              medicationName={itemData.item.medication_name}
-              dosage={itemData.item.dosage}
-              frequency={itemData.item.frequency}
-            />
-          );
-        }}
-        keyExtractor={(item, index) =>
-          item.id ? item.id.toString() : index.toString()
-        }
-      />
-      <Button title="Add prescription" onPress={handlePress} />
-      <Button title="Home" onPress={onPress} />
-    </View>
+    <>
+      <View style={styles.container}>
+        <Text style={styles.title}>Active Prescriptions</Text>
+        <FlatList
+          data={prescriptions.prescriptions}
+          renderItem={(itemData) => {
+            return isLoading ? (
+              <PrescriptionCard />
+            ) : (
+              <PrescriptionCard
+                medicationName={itemData.item.medication_name}
+                dosage={itemData.item.dosage}
+                frequency={itemData.item.frequency}
+              />
+            );
+          }}
+          keyExtractor={(item, index) =>
+            item.id ? item.id.toString() : index.toString()
+          }
+        />
+        <View style={styles.addButton}>
+          <Button color="teal" title="Add prescription" onPress={handlePress} />
+        </View>
+      </View>
+      <View style={styles.homeButton}>
+        <Button color="teal" title="Home" onPress={onPress} />
+      </View>
+    </>
   );
 }
 
@@ -95,4 +100,9 @@ const styles = StyleSheet.create({
     borderBottomColor: "white",
     marginBottom: 15,
   },
+  addButton: {
+    marginTop: 20,
+    justifyContent: "flex-end",
+  },
+  homeButton: { padding: 20 },
 });
