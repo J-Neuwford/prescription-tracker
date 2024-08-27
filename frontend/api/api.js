@@ -23,3 +23,13 @@ export const storePrescription = async (newPrescription) => {
     throw error;
   }
 };
+
+export const deletePrescription = async (id) => {
+  try {
+    const response = await axios.delete(`${BASE_URL}/prescriptions/${id}`);
+    return response.data;
+  } catch (error) {
+    console.log("Error deleting prescription", error);
+    throw error;
+  }
+};

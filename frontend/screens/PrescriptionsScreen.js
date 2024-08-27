@@ -1,21 +1,12 @@
-import { View, Text, StyleSheet, FlatList, Button } from "react-native";
+import { View, Text, StyleSheet, FlatList, Button, Alert } from "react-native";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { BASE_URL } from "@env";
-import { fetchPrescriptions, storePrescription } from "../api/api";
+import { fetchPrescriptions, deletePrescription } from "../api/api";
 
 import PrescriptionCard from "../components/PrescriptionCard";
 
-const newPrescription = {
-  medication_name: "Paracetamol",
-  dosage: "1000mg",
-  frequency: "Every four hours",
-  is_repeating: false,
-};
-
-function PrescriptionsScreen({ onPress }) {
-  const [isLoading, setIsLoading] = useState(false);
+function PrescriptionsScreen({ onNavigate, onPressAddPrescription }) {
   const [prescriptions, setPrescriptions] = useState([]);
+  const [selectedPrescription, setSelectedPrescription] = useState(null);
 
   useEffect(() => {
     loadPrescriptions();
@@ -25,37 +16,46 @@ function PrescriptionsScreen({ onPress }) {
     try {
       const data = await fetchPrescriptions();
       setPrescriptions(data);
+      console.log(data);
     } catch (error) {
       console.log("Error loading prescriptions", error);
     }
   };
 
-  const handleAddPrescription = async () => {
-    setIsLoading(true);
+  function handleSelectPrescription(id) {
+    setSelectedPrescription(id === selectedPrescription ? null : id);
+  }
+
+  const handleDeletePrescription = async () => {
     try {
-      await storePrescription(newPrescription);
-      await loadPrescriptions();
+      await deletePrescription(selectedPrescription);
+      setSelectedPrescription(null);
+      loadPrescriptions();
+      Alert.alert(
+        "Prescription Deleted!",
+        "You successfully deleted this prescription.",
+        [{ text: "OK", style: "default" }]
+      );
     } catch (error) {
-      console.log("Error adding prescription", error);
-    } finally {
-      setIsLoading(false);
+      console.log("Failed to delete prescription", error);
     }
   };
 
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.title}>Active Prescriptions</Text>
+        <Text style={styles.title}>PRESCRIPTIONS</Text>
         <FlatList
           data={prescriptions.prescriptions}
           renderItem={(itemData) => {
-            return isLoading ? (
-              <PrescriptionCard />
-            ) : (
+            const isSelected = selectedPrescription === itemData.item.id;
+            return (
               <PrescriptionCard
                 medicationName={itemData.item.medication_name}
                 dosage={itemData.item.dosage}
                 frequency={itemData.item.frequency}
+                isSelected={isSelected}
+                onPress={() => handleSelectPrescription(itemData.item.id)}
               />
             );
           }}
@@ -63,16 +63,35 @@ function PrescriptionsScreen({ onPress }) {
             item.id ? item.id.toString() : index.toString()
           }
         />
-        <View style={styles.addButton}>
-          <Button
-            color="teal"
-            title="Add prescription"
-            onPress={handleAddPrescription}
-          />
-        </View>
+        {selectedPrescription && (
+          <View style={styles.buttonsContainer}>
+            <View style={styles.button}>
+              <Button
+                title="Delete"
+                color="firebrick"
+                onPress={handleDeletePrescription}
+              />
+            </View>
+            <View style={styles.button}>
+              <Button title="Edit" color="teal" />
+            </View>
+          </View>
+        )}
+
+        {!selectedPrescription && (
+          <View style={styles.buttonsContainer}>
+            <View>
+              <Button
+                color="teal"
+                title="Add prescription"
+                onPress={onPressAddPrescription}
+              />
+            </View>
+          </View>
+        )}
       </View>
       <View style={styles.homeButton}>
-        <Button color="teal" title="Home" onPress={onPress} />
+        <Button color="teal" title="Home" onPress={onNavigate} />
       </View>
     </>
   );
@@ -83,22 +102,27 @@ export default PrescriptionsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 120,
-    marginBottom: 80,
-    // backgroundColor: "red",
     alignItems: "center",
   },
   title: {
     color: "white",
     textAlign: "left",
     fontSize: 32,
-    borderBottomWidth: 2,
-    borderBottomColor: "white",
-    marginBottom: 15,
+    marginTop: 40,
+    marginBottom: 50,
+    borderWidth: 1,
+    borderColor: "white",
+    borderRadius: 4,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
   },
-  addButton: {
-    marginTop: 20,
-    justifyContent: "flex-end",
+  buttonsContainer: {
+    flexDirection: "row",
+    margin: 30,
+    justifyContent: "flex-start",
+  },
+  button: {
+    marginHorizontal: 32,
   },
   homeButton: { padding: 20 },
 });

@@ -4,17 +4,39 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import PrescriptionsScreen from "./screens/PrescriptionsScreen.js";
 import HomeScreen from "./screens/HomeScreen.js";
+import AddPrescriptionScreen from "./screens/AddPrescriptionScreen.js";
 
 export default function App() {
-  const [screen, setScreen] = useState(
-    <HomeScreen onPress={handleNavigateToPrescriptionsScreen} />
-  );
+  // NAVIGATION PLACEHOLDER
+  const screens = {
+    homeScreen: <HomeScreen onNavigate={handleNavigateToPrescriptionsScreen} />,
+    prescriptionsScreen: (
+      <PrescriptionsScreen
+        onNavigate={handleNavigateToHomeScreen}
+        onPressAddPrescription={handleAddPrescription}
+      />
+    ),
+    AddPrescriptionScreen: (
+      <AddPrescriptionScreen onNavigate={handleCancelAddPrescription} />
+    ),
+  };
+
+  const [screen, setScreen] = useState(screens.homeScreen);
+
+  function handleAddPrescription() {
+    setScreen(screens.AddPrescriptionScreen);
+  }
+
+  function handleCancelAddPrescription() {
+    setScreen(screens.prescriptionsScreen);
+  }
+
   function handleNavigateToPrescriptionsScreen() {
-    setScreen(<PrescriptionsScreen onPress={handleNavigateToHomeScreen} />);
+    setScreen(screens.prescriptionsScreen);
   }
 
   function handleNavigateToHomeScreen() {
-    setScreen(<HomeScreen onPress={handleNavigateToPrescriptionsScreen} />);
+    setScreen(screens.homeScreen);
   }
   return (
     <>
