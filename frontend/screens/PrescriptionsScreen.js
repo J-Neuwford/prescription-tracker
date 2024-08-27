@@ -13,7 +13,7 @@ const newPrescription = {
   is_repeating: false,
 };
 
-function PrescriptionsScreen() {
+function PrescriptionsScreen({ onPress }) {
   const [isLoading, setIsLoading] = useState(false);
   const [prescriptions, setPrescriptions] = useState([]);
 
@@ -72,6 +72,7 @@ function PrescriptionsScreen() {
         }
       />
       <Button title="Add prescription" onPress={handlePress} />
+      <Button title="Home" onPress={onPress} />
     </View>
   );
 }
