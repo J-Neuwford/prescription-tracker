@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, FlatList, Button } from "react-native";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "@env";
+import { fetchPrescriptions, storePrescription } from "../api/api";
 
 import PrescriptionCard from "../components/PrescriptionCard";
 
@@ -17,38 +18,29 @@ function PrescriptionsScreen({ onPress }) {
   const [prescriptions, setPrescriptions] = useState([]);
 
   useEffect(() => {
-    fetchPrescriptions();
+    loadPrescriptions();
   }, []);
 
-  const fetchPrescriptions = async () => {
+  const loadPrescriptions = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/prescriptions`);
-      setPrescriptions(response.data);
-      console.log("response", response.data);
+      const data = await fetchPrescriptions();
+      setPrescriptions(data);
     } catch (error) {
-      console.log("Error fetching prescriptions", error);
+      console.log("Error loading prescriptions", error);
     }
   };
 
-  const storePrescription = async () => {
+  const handleAddPrescription = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        `${BASE_URL}/prescriptions`,
-        newPrescription
-      );
-      console.log(response);
-      fetchPrescriptions();
-      setIsLoading(false);
+      await storePrescription(newPrescription);
+      await loadPrescriptions();
     } catch (error) {
-      console.log("error", error);
+      console.log("Error adding prescription", error);
+    } finally {
       setIsLoading(false);
     }
   };
-
-  function handlePress() {
-    storePrescription();
-  }
 
   return (
     <>
@@ -72,7 +64,11 @@ function PrescriptionsScreen({ onPress }) {
           }
         />
         <View style={styles.addButton}>
-          <Button color="teal" title="Add prescription" onPress={handlePress} />
+          <Button
+            color="teal"
+            title="Add prescription"
+            onPress={handleAddPrescription}
+          />
         </View>
       </View>
       <View style={styles.homeButton}>
