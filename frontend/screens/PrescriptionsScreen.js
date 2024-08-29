@@ -4,9 +4,13 @@ import { fetchPrescriptions, deletePrescription } from "../api/api";
 
 import PrescriptionCard from "../components/PrescriptionCard";
 
-function PrescriptionsScreen({ onNavigate, onPressAddPrescription }) {
+function PrescriptionsScreen({
+  onNavigateHome,
+  onNavigateToAddScreen,
+  onNavigateToEditScreen,
+}) {
   const [prescriptions, setPrescriptions] = useState([]);
-  const [selectedPrescription, setSelectedPrescription] = useState(null);
+  const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
 
   useEffect(() => {
     loadPrescriptions();
@@ -16,21 +20,20 @@ function PrescriptionsScreen({ onNavigate, onPressAddPrescription }) {
     try {
       const data = await fetchPrescriptions();
       setPrescriptions(data);
-      console.log(data);
     } catch (error) {
       console.log("Error loading prescriptions", error);
     }
   };
 
   function handleSelectPrescription(id) {
-    setSelectedPrescription(id === selectedPrescription ? null : id);
+    setSelectedPrescriptionId(id === selectedPrescriptionId ? null : id);
   }
 
   const handleDeletePrescription = async () => {
     try {
-      await deletePrescription(selectedPrescription);
-      setSelectedPrescription(null);
-      loadPrescriptions();
+      await deletePrescription(selectedPrescriptionId);
+      setSelectedPrescriptionId(null);
+      loadPrescriptions(); // TODO filter existing list instead
       Alert.alert(
         "Prescription Deleted!",
         "You successfully deleted this prescription.",
@@ -48,7 +51,7 @@ function PrescriptionsScreen({ onNavigate, onPressAddPrescription }) {
         <FlatList
           data={prescriptions.prescriptions}
           renderItem={(itemData) => {
-            const isSelected = selectedPrescription === itemData.item.id;
+            const isSelected = selectedPrescriptionId === itemData.item.id;
             return (
               <PrescriptionCard
                 medicationName={itemData.item.medication_name}
@@ -63,7 +66,7 @@ function PrescriptionsScreen({ onNavigate, onPressAddPrescription }) {
             item.id ? item.id.toString() : index.toString()
           }
         />
-        {selectedPrescription && (
+        {selectedPrescriptionId && (
           <View style={styles.buttonsContainer}>
             <View style={styles.button}>
               <Button
@@ -73,25 +76,36 @@ function PrescriptionsScreen({ onNavigate, onPressAddPrescription }) {
               />
             </View>
             <View style={styles.button}>
-              <Button title="Edit" color="teal" />
+              <Button
+                title="Edit"
+                color="teal"
+                onPress={() => {
+                  const prescriptionToEdit = prescriptions.prescriptions.find(
+                    (p) => p.id === selectedPrescriptionId
+                  );
+                  if (prescriptionToEdit) {
+                    onNavigateToEditScreen(prescriptionToEdit);
+                  }
+                }}
+              />
             </View>
           </View>
         )}
 
-        {!selectedPrescription && (
+        {!selectedPrescriptionId && (
           <View style={styles.buttonsContainer}>
             <View>
               <Button
                 color="teal"
                 title="Add prescription"
-                onPress={onPressAddPrescription}
+                onPress={onNavigateToAddScreen}
               />
             </View>
           </View>
         )}
       </View>
       <View style={styles.homeButton}>
-        <Button color="teal" title="Home" onPress={onNavigate} />
+        <Button color="teal" title="Home" onPress={onNavigateHome} />
       </View>
     </>
   );

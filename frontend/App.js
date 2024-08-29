@@ -5,38 +5,49 @@ import { LinearGradient } from "expo-linear-gradient";
 import PrescriptionsScreen from "./screens/PrescriptionsScreen.js";
 import HomeScreen from "./screens/HomeScreen.js";
 import AddPrescriptionScreen from "./screens/AddPrescriptionScreen.js";
+import EditPrescriptionScreen from "./screens/EditPrescriptionScreen.js";
 
 export default function App() {
   // NAVIGATION PLACEHOLDER
   const screens = {
-    homeScreen: <HomeScreen onNavigate={handleNavigateToPrescriptionsScreen} />,
+    homeScreen: <HomeScreen onNavigate={handleNavigateToPrescriptions} />,
     prescriptionsScreen: (
       <PrescriptionsScreen
-        onNavigate={handleNavigateToHomeScreen}
-        onPressAddPrescription={handleAddPrescription}
+        onNavigateHome={handleNavigateToHomeScreen}
+        onNavigateToAddScreen={handleNavigateToAddPrescription}
+        onNavigateToEditScreen={handleNavigateToEditPrescription}
       />
     ),
     AddPrescriptionScreen: (
-      <AddPrescriptionScreen onNavigate={handleCancelAddPrescription} />
+      <AddPrescriptionScreen
+        onCancel={handleNavigateToPrescriptions}
+        onNavigateToPrescriptions={handleNavigateToPrescriptions}
+      />
     ),
   };
 
   const [screen, setScreen] = useState(screens.homeScreen);
 
-  function handleAddPrescription() {
+  function handleNavigateToAddPrescription() {
     setScreen(screens.AddPrescriptionScreen);
   }
 
-  function handleCancelAddPrescription() {
+  function handleNavigateToPrescriptions() {
     setScreen(screens.prescriptionsScreen);
-  }
-
-  function handleNavigateToPrescriptionsScreen() {
-    setScreen(screens.prescriptionsScreen);
-  }
+  } //
 
   function handleNavigateToHomeScreen() {
     setScreen(screens.homeScreen);
+  }
+
+  function handleNavigateToEditPrescription(selectedPrescription) {
+    setScreen(
+      <EditPrescriptionScreen
+        onCancel={handleNavigateToPrescriptions}
+        existingPrescription={selectedPrescription}
+        onNavigateToPrescriptions={handleNavigateToPrescriptions}
+      />
+    );
   }
   return (
     <>

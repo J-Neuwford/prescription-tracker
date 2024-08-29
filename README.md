@@ -38,6 +38,9 @@ As a user, I can:
 - selected prescription, edit and delete icons
 - colours file
 - add setup instructions to README
+- add custom button component
+- split list component
+- refactor flatlist to use header
 
 ## TODO Backend
 

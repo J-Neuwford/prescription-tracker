@@ -1,31 +1,35 @@
 import { useState } from "react";
 import { View, Text, Button, StyleSheet, TextInput, Alert } from "react-native";
-import { storePrescription } from "../api/api";
+import { updatePrescription } from "../api/api";
 
-function AddPrescriptionScreen({ onNavigateToPrescriptions }) {
-  const [newPrescription, setNewPrescription] = useState({
-    medication_name: "", // TODO individual states
-    dosage: "",
-    frequency: "",
-    is_repeating: false,
+function EditPrescriptionScreen({
+  onNavigateToPrescriptions,
+  existingPrescription,
+}) {
+  const [updatedPrescription, setUpdatedPrescription] = useState({
+    id: existingPrescription.id,
+    medication_name: existingPrescription.medication_name, // TODO individual states
+    dosage: existingPrescription.dosage,
+    frequency: existingPrescription.frequency,
+    is_repeating: existingPrescription.is_repeating,
   });
 
   function medicationNameInputHandler(input) {
-    setNewPrescription((prescription) => ({
+    setUpdatedPrescription((prescription) => ({
       ...prescription,
       medication_name: input,
     }));
   }
 
   function dosageInputHandler(input) {
-    setNewPrescription((prescription) => ({
+    setUpdatedPrescription((prescription) => ({
       ...prescription,
       dosage: input,
     }));
   }
 
   function frequencyInputHandler(input) {
-    setNewPrescription((prescription) => ({
+    setUpdatedPrescription((prescription) => ({
       ...prescription,
       frequency: input,
     }));
@@ -33,21 +37,11 @@ function AddPrescriptionScreen({ onNavigateToPrescriptions }) {
 
   const onConfirm = async () => {
     try {
-      if (
-        newPrescription.medication_name !== "" && // TODO extract the validation
-        newPrescription.dosage !== "" &&
-        newPrescription.frequency !== ""
-      ) {
-        await storePrescription(newPrescription);
-        onNavigateToPrescriptions();
-      } else {
-        Alert.alert("Form incomplete", "Please fill in all fields", [
-          { text: "OK", style: "default" },
-        ]);
-      }
+      await updatePrescription(existingPrescription.id, updatedPrescription);
+      Alert.alert("Success", "Prescription updated successfully");
+      onNavigateToPrescriptions();
     } catch (error) {
-      console.log("Error adding prescription", error);
-    } finally {
+      Alert.alert("Error", "Failed to update prescription.");
     }
   };
 
@@ -60,18 +54,21 @@ function AddPrescriptionScreen({ onNavigateToPrescriptions }) {
           placeholder="Medication Name"
           placeholderTextColor={"gray"}
           onChangeText={medicationNameInputHandler}
+          value={updatedPrescription.medication_name}
         />
         <TextInput
           style={styles.textInput}
           placeholder="Dosage"
           placeholderTextColor={"gray"}
           onChangeText={dosageInputHandler}
+          value={updatedPrescription.dosage}
         />
         <TextInput
           style={styles.textInput}
           placeholder="Frequency"
           placeholderTextColor={"gray"}
           onChangeText={frequencyInputHandler}
+          value={updatedPrescription.frequency}
         />
       </View>
       <View style={styles.buttons}>
@@ -83,14 +80,14 @@ function AddPrescriptionScreen({ onNavigateToPrescriptions }) {
           />
         </View>
         <View style={styles.button}>
-          <Button color="teal" title="Confirm" onPress={onConfirm} />
+          <Button color="teal" title="Confirm Changes" onPress={onConfirm} />
         </View>
       </View>
     </>
   );
 }
 
-export default AddPrescriptionScreen;
+export default EditPrescriptionScreen;
 
 const styles = StyleSheet.create({
   container: {
