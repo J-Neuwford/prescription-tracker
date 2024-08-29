@@ -1,4 +1,3 @@
-// Prescription type to represent a single prescription object
 export type Prescription = {
   id: number;
   medication_name: string;
@@ -18,14 +17,10 @@ export type PrescriptionsResponse = {
   prescriptions: Prescription[];
 };
 
-// Props for components
-
-// HomeScreen Props
 export type HomeScreenProps = {
   onNavigate: () => void;
 };
 
-// PrescriptionCard Props
 export type PrescriptionCardProps = {
   medicationName: string;
   dosage: string;
@@ -34,20 +29,17 @@ export type PrescriptionCardProps = {
   onPress: () => void;
 };
 
-// PrescriptionsScreen Props
 export type PrescriptionsScreenProps = {
   onNavigateHome: () => void;
   onNavigateToAddScreen: () => void;
   onNavigateToEditScreen: (prescription: Prescription) => void;
 };
 
-// AddPrescriptionScreen Props
 export type AddPrescriptionScreenProps = {
   onCancel: () => void;
   onNavigateToPrescriptions: () => void;
 };
 
-// EditPrescriptionScreen Props
 export type EditPrescriptionScreenProps = {
   existingPrescription: Prescription;
   onCancel: () => void;
