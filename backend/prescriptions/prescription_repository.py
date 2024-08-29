@@ -1,4 +1,4 @@
-from prescription_model import PrescriptionInput, Prescription, Prescriptions
+from prescriptions.prescription_model import PrescriptionInput, Prescription, Prescriptions
 
 class PrescriptionRepository: 
   def __init__(self, connection):
