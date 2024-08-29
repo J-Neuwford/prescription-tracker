@@ -1,5 +1,5 @@
-from prescription_model import Prescription, PrescriptionInput, Prescriptions
-from prescription_repository import PrescriptionRepository
+from prescriptions.prescription_model import Prescription, PrescriptionInput, Prescriptions
+from prescriptions.prescription_repository import PrescriptionRepository
 
 class PrescriptionService:
   def _init_(self, repository: PrescriptionRepository):
