@@ -2,8 +2,8 @@
 
 A mobile app to keep track of prescriptions and schedule reminders to take medication.
 
-This is an exploration into technologies I have not used before. I am using **React Native** for the front end, with **Python** and **Quart** for the back end.
-I also experimented with using **SQLite** whilst developing the backend locally, but am using **PostgreSQL** for persistent data in production.
+This is an exploration into technologies I have not used before. I am using **TypeScript** + **React Native** for the frontend, with **Python** + **Quart** on the backend.
+I am also using **SQLite** whilst developing locally, but am using **PostgreSQL** in production.
 
 ## MVP
 
