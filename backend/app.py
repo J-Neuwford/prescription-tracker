@@ -1,9 +1,9 @@
 from quart import abort, g, Quart
 from quart_db import QuartDB
 from quart_schema import QuartSchema, validate_request, validate_response
-from prescription_model import PrescriptionInput, Prescription, Prescriptions
-from prescription_repository import PrescriptionRepository
-from prescription_service import PrescriptionService
+from prescriptions.prescription_model import PrescriptionInput, Prescription, Prescriptions
+from prescriptions.prescription_repository import PrescriptionRepository
+from prescriptions.prescription_service import PrescriptionService
 import os
 from dotenv import load_dotenv
 
