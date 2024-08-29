@@ -1,8 +1,9 @@
-from dataclasses import dataclass
-
 from quart import abort, g, Quart
 from quart_db import QuartDB
 from quart_schema import QuartSchema, validate_request, validate_response
+from prescription_model import PrescriptionInput, Prescription, Prescriptions
+from prescription_repository import PrescriptionRepository
+from prescription_service import PrescriptionService
 import os
 from dotenv import load_dotenv
 
@@ -13,77 +14,43 @@ app = Quart(__name__)
 QuartDB(app, url=DATABASE_URL)
 QuartSchema(app)
 
-@dataclass
-class PrescriptionInput:
-  medication_name: str
-  dosage: str
-  frequency: str
-  is_repeating: bool
-
-@dataclass
-class Prescription(PrescriptionInput):
-  id: int
+repository = PrescriptionRepository
+service = PrescriptionService
 
 @app.post("/prescriptions/")
 @validate_request(PrescriptionInput)
 @validate_response(Prescription)
 async def createPrescription(data: PrescriptionInput) -> Prescription:
   """Create a new prescription"""
-  result = await g.connection.fetch_one(
-    """INSERT INTO prescriptions (medication_name, dosage, frequency, is_repeating)
-        VALUES(:medication_name, :dosage, :frequency, :is_repeating)
-        RETURNING id, medication_name, dosage, frequency, is_repeating""",
-        {"medication_name": data.medication_name, 
-         "dosage": data.dosage, 
-         "frequency": data.frequency, 
-         "is_repeating": data.is_repeating},
-  )
-  return Prescription(**result)
+  try:
+      prescription = await service.create_prescription(data)
+      return prescription
+  except Exception as error:
+      abort(400, description=str(error))
 
-@dataclass
-class Prescriptions:
-  prescriptions: list[Prescription]
 
 @app.get("/prescriptions/")
 @validate_response(Prescriptions)
 async def get_prescriptions() -> Prescriptions:
-  """Get all prescriptions"""
-  query = """SELECT id, medication_name, dosage, frequency, is_repeating 
-              FROM prescriptions"""
-  prescriptions = [
-    Prescription(**row)
-    async for row in g.connection.iterate(query)
-  ]
-  return Prescriptions(prescriptions=prescriptions)
+    """Get all prescriptions"""
+    prescriptions = await service.get_prescriptions()
+    return Prescriptions(prescriptions=prescriptions)
+
 
 @app.put("/prescriptions/<int:id>/")
 @validate_request(PrescriptionInput)
 @validate_response(Prescription)
 async def update_prescription(id: int, data: PrescriptionInput) -> Prescription:
-  """Update a prescription"""
-  result = await g.connection.fetch_one(
-    """UPDATE prescriptions
-        SET medication_name = :medication_name,
-            dosage = :dosage,
-            frequency = :frequency,
-            is_repeating = :is_repeating
-            WHERE id = :id
-            RETURNING id, medication_name, dosage, frequency, is_repeating""",
-            {"id": id, 
-             "medication_name": data.medication_name, 
-             "dosage": data.dosage,
-             "frequency": data.frequency,
-             "is_repeating": data.is_repeating},
-  )
-  if result is None:
-    abort(404)
-  return Prescription(**result)
+    """Update a prescription"""
+    try:
+        prescription = await service.update_prescription(id, data)
+        return prescription
+    except ValueError:
+        abort(404, description="Prescription not found")
+
 
 @app.delete("/prescriptions/<int:id>/")
-async def delete_prescription(id:int) -> str:
-  """Delete a prescription"""
-  await g.connection.execute(
-    """DELETE FROM prescriptions WHERE id = :id""",
-    {"id": id},
-  )
-  return ""
+async def delete_prescription(id: int) -> str:
+    """Delete a prescription"""
+    await service.delete_prescription(id)
+    return ""
