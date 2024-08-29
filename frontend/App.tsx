@@ -1,15 +1,19 @@
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { SafeAreaView, StatusBar, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-import PrescriptionsScreen from "./screens/PrescriptionsScreen.js";
-import HomeScreen from "./screens/HomeScreen.js";
-import AddPrescriptionScreen from "./screens/AddPrescriptionScreen.js";
-import EditPrescriptionScreen from "./screens/EditPrescriptionScreen.js";
+import PrescriptionsScreen from "./screens/PrescriptionsScreen";
+import HomeScreen from "./screens/HomeScreen";
+import AddPrescriptionScreen from "./screens/AddPrescriptionScreen";
+import EditPrescriptionScreen from "./screens/EditPrescriptionScreen";
+
+import { Prescription } from "./types/types.js";
+
+type ScreenKey = "homeScreen" | "prescriptionsScreen" | "addPrescriptionScreen";
 
 export default function App() {
   // NAVIGATION PLACEHOLDER
-  const screens = {
+  const screens: Record<ScreenKey, ReactElement> = {
     homeScreen: <HomeScreen onNavigate={handleNavigateToPrescriptions} />,
     prescriptionsScreen: (
       <PrescriptionsScreen
@@ -18,7 +22,7 @@ export default function App() {
         onNavigateToEditScreen={handleNavigateToEditPrescription}
       />
     ),
-    AddPrescriptionScreen: (
+    addPrescriptionScreen: (
       <AddPrescriptionScreen
         onCancel={handleNavigateToPrescriptions}
         onNavigateToPrescriptions={handleNavigateToPrescriptions}
@@ -28,19 +32,21 @@ export default function App() {
 
   const [screen, setScreen] = useState(screens.homeScreen);
 
-  function handleNavigateToAddPrescription() {
-    setScreen(screens.AddPrescriptionScreen);
+  function handleNavigateToAddPrescription(): void {
+    setScreen(screens.addPrescriptionScreen);
   }
 
-  function handleNavigateToPrescriptions() {
+  function handleNavigateToPrescriptions(): void {
     setScreen(screens.prescriptionsScreen);
   } //
 
-  function handleNavigateToHomeScreen() {
+  function handleNavigateToHomeScreen(): void {
     setScreen(screens.homeScreen);
   }
 
-  function handleNavigateToEditPrescription(selectedPrescription) {
+  function handleNavigateToEditPrescription(
+    selectedPrescription: Prescription
+  ) {
     setScreen(
       <EditPrescriptionScreen
         onCancel={handleNavigateToPrescriptions}
@@ -51,7 +57,7 @@ export default function App() {
   }
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar barStyle="light-content" />
       <LinearGradient colors={["#212529", "#343a40"]} style={styles.rootScreen}>
         <SafeAreaView style={styles.rootScreen}>{screen}</SafeAreaView>
       </LinearGradient>

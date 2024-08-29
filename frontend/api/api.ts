@@ -1,7 +1,12 @@
 import axios from "axios";
 import { BASE_URL } from "@env";
+import {
+  NewPrescription,
+  Prescription,
+  PrescriptionsResponse,
+} from "../types/types";
 
-export const fetchPrescriptions = async () => {
+export const fetchPrescriptions = async (): Promise<PrescriptionsResponse> => {
   try {
     const response = await axios.get(`${BASE_URL}/prescriptions`);
     return response.data;
@@ -13,7 +18,7 @@ export const fetchPrescriptions = async () => {
 
 // TODO use camel case for medication name etc. map here with TS
 
-export const storePrescription = async (newPrescription) => {
+export const storePrescription = async (newPrescription: NewPrescription) => {
   try {
     const response = await axios.post(
       `${BASE_URL}/prescriptions`,
@@ -26,7 +31,7 @@ export const storePrescription = async (newPrescription) => {
   }
 };
 
-export const deletePrescription = async (id) => {
+export const deletePrescription = async (id: number) => {
   try {
     const response = await axios.delete(`${BASE_URL}/prescriptions/${id}`);
     return response.data;
@@ -36,7 +41,10 @@ export const deletePrescription = async (id) => {
   }
 };
 
-export const updatePrescription = async (id, updatedPrescription) => {
+export const updatePrescription = async (
+  id: number,
+  updatedPrescription: Prescription
+) => {
   try {
     const response = await axios.put(
       `${BASE_URL}/prescriptions/${id}`,

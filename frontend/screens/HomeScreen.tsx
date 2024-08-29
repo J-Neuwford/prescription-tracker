@@ -1,6 +1,10 @@
 import { View, Text, Button, StyleSheet } from "react-native";
 
-function HomeScreen({ onNavigate }) {
+type HomeScreenProps = {
+  onNavigate: () => void;
+};
+
+function HomeScreen({ onNavigate }: HomeScreenProps) {
   return (
     <>
       <View style={styles.container}>

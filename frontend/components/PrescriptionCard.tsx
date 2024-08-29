@@ -1,13 +1,13 @@
 import { Text, View, StyleSheet, Pressable } from "react-native";
+import { PrescriptionCardProps } from "../types/types";
 
 function PrescriptionCard({
   medicationName,
   dosage,
   frequency,
-  isRepeating,
   isSelected,
   onPress,
-}) {
+}: PrescriptionCardProps) {
   return (
     <Pressable
       style={[styles.container, isSelected && styles.selectedContainer]}
@@ -17,7 +17,6 @@ function PrescriptionCard({
         <Text style={styles.medicationName}>{medicationName}</Text>
         <Text style={styles.dosage}>{dosage}</Text>
         <Text style={styles.frequency}>{frequency}</Text>
-        <Text>{isRepeating}</Text>
       </View>
     </Pressable>
   );
@@ -33,8 +32,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 4,
     elevation: 2,
-    paddingTop: 10,
-    paddingLeft: 10,
+    padding: 10,
   },
   selectedContainer: {
     backgroundColor: "green",

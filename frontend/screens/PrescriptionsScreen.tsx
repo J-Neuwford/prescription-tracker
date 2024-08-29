@@ -3,14 +3,23 @@ import { useEffect, useState } from "react";
 import { fetchPrescriptions, deletePrescription } from "../api/api";
 
 import PrescriptionCard from "../components/PrescriptionCard";
+import { Prescription, PrescriptionsResponse } from "../types/types";
+
+type PrescriptionsScreenProps = {
+  onNavigateHome: () => void;
+  onNavigateToAddScreen: () => void;
+  onNavigateToEditScreen: (prescription: Prescription) => void;
+};
 
 function PrescriptionsScreen({
   onNavigateHome,
   onNavigateToAddScreen,
   onNavigateToEditScreen,
-}) {
-  const [prescriptions, setPrescriptions] = useState([]);
-  const [selectedPrescriptionId, setSelectedPrescriptionId] = useState(null);
+}: PrescriptionsScreenProps) {
+  const [prescriptions, setPrescriptions] = useState<PrescriptionsResponse>();
+  const [selectedPrescriptionId, setSelectedPrescriptionId] = useState<
+    number | null
+  >(null);
 
   useEffect(() => {
     loadPrescriptions();
@@ -25,20 +34,22 @@ function PrescriptionsScreen({
     }
   };
 
-  function handleSelectPrescription(id) {
+  function handleSelectPrescription(id: number) {
     setSelectedPrescriptionId(id === selectedPrescriptionId ? null : id);
   }
 
   const handleDeletePrescription = async () => {
     try {
-      await deletePrescription(selectedPrescriptionId);
-      setSelectedPrescriptionId(null);
-      loadPrescriptions(); // TODO filter existing list instead
-      Alert.alert(
-        "Prescription Deleted!",
-        "You successfully deleted this prescription.",
-        [{ text: "OK", style: "default" }]
-      );
+      if (selectedPrescriptionId) {
+        await deletePrescription(selectedPrescriptionId);
+        setSelectedPrescriptionId(null);
+        loadPrescriptions(); // TODO filter existing list instead
+        Alert.alert(
+          "Prescription Deleted!",
+          "You successfully deleted this prescription.",
+          [{ text: "OK", style: "default" }]
+        );
+      }
     } catch (error) {
       console.log("Failed to delete prescription", error);
     }
@@ -49,7 +60,7 @@ function PrescriptionsScreen({
       <View style={styles.container}>
         <Text style={styles.title}>PRESCRIPTIONS</Text>
         <FlatList
-          data={prescriptions.prescriptions}
+          data={prescriptions ? prescriptions.prescriptions : null}
           renderItem={(itemData) => {
             const isSelected = selectedPrescriptionId === itemData.item.id;
             return (
@@ -80,9 +91,11 @@ function PrescriptionsScreen({
                 title="Edit"
                 color="teal"
                 onPress={() => {
-                  const prescriptionToEdit = prescriptions.prescriptions.find(
-                    (p) => p.id === selectedPrescriptionId
-                  );
+                  const prescriptionToEdit = prescriptions
+                    ? prescriptions.prescriptions.find(
+                        (p) => p.id === selectedPrescriptionId
+                      )
+                    : null;
                   if (prescriptionToEdit) {
                     onNavigateToEditScreen(prescriptionToEdit);
                   }

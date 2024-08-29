@@ -14,7 +14,7 @@ As a user, I can:
 - navigate between a home screen and prescriptions screen. ✅
 - add prescriptions. ✅
 - view active prescriptions. ✅
-- edit and delete active prescriptions.
+- edit and delete active prescriptions. ✅
 
 // Tech notes: Simple CRUD app to learn the ropes of the new tech. Get the backend deployed and accepting calls from the frontend. Implement a simple, clean UI that has clear flows.
 

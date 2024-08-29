@@ -18,7 +18,9 @@
     "react-native-dotenv": "^3.4.11"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@types/react": "^18.3.4",
+    "typescript": "^5.5.4"
   },
   "private": true
 }
