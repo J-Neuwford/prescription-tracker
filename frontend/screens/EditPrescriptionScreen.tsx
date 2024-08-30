@@ -49,7 +49,7 @@ function EditPrescriptionScreen({
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.title}>NEW PRESCRIPTION</Text>
+        <Text style={styles.title}>EDIT PRESCRIPTION</Text>
         <TextInput
           style={styles.textInput}
           placeholder="Medication Name"
